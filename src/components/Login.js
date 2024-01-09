@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Header from "./Header";
-import { LOGIN_LOGO_URL } from "../utils/constants";
+import {LOGIN_LOGO_URL, USER_ICON_URL} from "../utils/constants";
 import { checkValidLoginData } from "../utils/validate";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
@@ -40,9 +40,8 @@ export const Login = () => {
                 .then((userCredential) => {
                     // Signed up
                     const user = userCredential.user;
-                    console.log(user);
                     updateProfile(user, {
-                        displayName: fullName.current.value, photoURL: "https://avatars.githubusercontent.com/u/25737585?v=4"
+                        displayName: fullName.current.value, photoURL: USER_ICON_URL
                     }).then(() => {
                         const {uid, email, displayName, photoURL} = auth.currentUser;
                         dispatch(addUser(
@@ -67,7 +66,6 @@ export const Login = () => {
                 .then((userCredential) => {
                     // Signed in
                     const user = userCredential.user;
-                    console.log(user);
                     navigate("/browse");
                 })
                 .catch((error) => {
