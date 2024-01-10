@@ -1,6 +1,7 @@
 import Login from "./Login";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Browse from "./Browse";
+import ManageProfile from "./ManageProfile";
 
 
 const appRouter = createBrowserRouter([
@@ -11,6 +12,10 @@ const appRouter = createBrowserRouter([
     {
         path: "/browse",
         element: <Browse/>,
+    },
+    {
+        path: "/manage-profile",
+        element: <ManageProfile />,
     },
 ]);
 
