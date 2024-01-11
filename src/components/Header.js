@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {HEADER_LOGO_URL} from "../utils/constants";
+import {HEADER_LOGO_URL, SUPPORTED_LANGUAGES, USER_ICON_URL} from "../utils/constants";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {auth} from "../utils/firebase";
 import {useNavigate} from "react-router-dom";
@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCog, faQuestionCircle, faSignInAlt, faUser} from "@fortawesome/free-solid-svg-icons";
 import {addUser, removeUser} from "../utils/userSlice";
+import {toggleGptSearchView} from "../utils/gptSlice";
+import { changeLanguage } from "../utils/configSlice";
 
 export const Header = () => {
 
@@ -17,6 +19,8 @@ export const Header = () => {
     const [showDropdown, setShowDropDown] = useState(false);
 
     const dispatch = useDispatch();
+
+    const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -59,6 +63,14 @@ export const Header = () => {
         setShowDropDown(!showDropdown);
     }
 
+    const handleGptSearchClick = () => {
+        dispatch(toggleGptSearchView());
+    }
+
+    const handleLanguageChange = (e) => {
+        dispatch(changeLanguage(e.target.value));
+    };
+
     return (
         <div
             className="absolute w-full px-4 md:px-8 py-2 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
@@ -67,17 +79,35 @@ export const Header = () => {
                 src={HEADER_LOGO_URL}
                 alt="logo"
             />
+            <div className="flex relative p-4 ml-[60%]">
+                <select
+                    className="p-2 m-2 bg-gray-900 text-white"
+                    onChange={handleLanguageChange}
+                >
+                    {SUPPORTED_LANGUAGES.map((lang) => (
+                        <option key={lang.identifier} value={lang.identifier}>
+                            {lang.name}
+                        </option>
+                    ))}
+                </select>
+                <button
+                    className="py-2 px-4 mx-4 my-2 bg-purple-800 text-white rounded-lg"
+                    onClick={handleGptSearchClick}
+                >
+                    {showGptSearch ? "Homepage" : "GPT Search"}
+                </button>
+                <img
+                    className="w-12 h-12"
+                    alt="userIcon"
+                    src={user ? user.photoURL : USER_ICON_URL}
+                    onClick={handleDropdownClick}
+                />
+            </div>
             {user && <div
-                className="relative flex p-4"
+                className="relative flex p-4 -ml-10"
                 onMouseEnter={handleDropdownEnter}
                 onMouseLeave={handleDropdownLeave}
             >
-                <img
-                    className="w-12 h-12 mr-2"
-                    alt="userIcon"
-                    src={user.photoURL}
-                    onClick={handleDropdownClick}
-                />
                 {showDropdown ? (
                     <span className="cursor-pointer mt-2 text-white" onClick={handleDropdownClick}>
                         &#9650;
@@ -91,10 +121,10 @@ export const Header = () => {
                         <ul>
                             <li
                                 className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
-                                onClick={() => () => navigate("/manage-profile")}
+                                onClick={() => navigate("/manage-profile")}
                             >
                                 <FontAwesomeIcon icon={faUser} className="mr-2"/>
-                                Manager Profiles
+                                Manage Profiles
                             </li>
                             <li className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
                                 onClick={() => console.log("Account called")}

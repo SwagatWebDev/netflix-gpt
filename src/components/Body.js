@@ -15,7 +15,7 @@ const appRouter = createBrowserRouter([
     },
     {
         path: "/manage-profile",
-        element: <ManageProfile />,
+        element: <ManageProfile/>,
     },
 ]);
 
