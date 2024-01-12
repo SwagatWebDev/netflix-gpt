@@ -7,7 +7,7 @@ export const MainContainer = () => {
     // called Early Return
     if(!movies) return ;
 
-    const mainMovie = movies[16];
+    const mainMovie = movies[17];
 
     const {original_title, overview, id} = mainMovie;
 

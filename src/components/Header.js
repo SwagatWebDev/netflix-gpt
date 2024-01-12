@@ -79,8 +79,8 @@ export const Header = () => {
                 src={HEADER_LOGO_URL}
                 alt="logo"
             />
-            <div className="flex relative p-4 ml-[60%]">
-                <select
+            <div className={`flex relative p-4 ${showGptSearch ? 'ml-[60%]' : 'ml-[65%]'}`}>
+                {showGptSearch && <select
                     className="p-2 m-2 bg-gray-900 text-white"
                     onChange={handleLanguageChange}
                 >
@@ -89,12 +89,12 @@ export const Header = () => {
                             {lang.name}
                         </option>
                     ))}
-                </select>
+                </select>}
                 <button
                     className="py-2 px-4 mx-4 my-2 bg-purple-800 text-white rounded-lg"
                     onClick={handleGptSearchClick}
                 >
-                    {showGptSearch ? "Homepage" : "GPT Search"}
+                    {showGptSearch ? "Homepage" : "ChatGPT Search"}
                 </button>
                 <img
                     className="w-12 h-12"
