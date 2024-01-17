@@ -6,14 +6,14 @@ import React from "react";
 const  GptSearch = () => {
     return (
         <>
-            <div className="absolute -z-10">
+            <div className="fixed -z-10">
                 <img
                     src={LOGIN_LOGO_URL}
                     alt="logo"
-                    className="object-cover w-full h-full"
+                    className="h-screen object-cover md:w-screen"
                 />
             </div>
-            <div>
+            <div className="">
                 <GptSearchBar/>
                 <GptMovieSuggestions/>
             </div>

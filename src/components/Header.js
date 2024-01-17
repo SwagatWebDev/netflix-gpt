@@ -76,13 +76,13 @@ export const Header = () => {
 
     return (
         <div
-            className="absolute w-full px-4 md:px-8 py-2 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
+            className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
             <img
                 className="w-44 mx-auto md:mx-0"
                 src={HEADER_LOGO_URL}
                 alt="logo"
             />
-            <div className={`flex relative p-4 ${showGptSearch ? 'ml-[57%]' : 'ml-[64%]'}`}>
+            { user && <div className="flex p-2 justify-between">
                 {showGptSearch && <select className="p-2 m-2 bg-gray-900 text-white"
                                           onChange={handleLanguageChange}>
                     {SUPPORTED_LANGUAGES.map((lang) => (
@@ -91,61 +91,61 @@ export const Header = () => {
                         </option>
                     ))}
                 </select>}
-                <button className="bg-purple-800 text-white rounded-lg py-2 px-4 mx-4 my-2"
+                <button className="py-2 px-4 mx-4 my-2 bg-purple-800 text-white rounded-lg"
                         onClick={handleGptSearchClick}>
-                    {showGptSearch ? "Home Page": "ChatGPT Search"}
+                    {showGptSearch ? "Home Page" : "ChatGPT Search"}
                 </button>
                 <img
-                    className="w-12 h-12"
+                    className="hidden md:block w-12 h-12"
                     alt="userIcon"
                     src={user ? user.photoURL : IMG_CDN_URL}
                     onClick={handleDropdownClick}
                 />
-            </div>
-            {user && <div
-                className="relative flex p-4 -ml-10"
-                onMouseEnter={handleDropdownEnter}
-                onMouseLeave={handleDropdownLeave}
-            >
-                {showDropdown ? (
-                    <span className="cursor-pointer mt-2 text-white" onClick={handleDropdownClick}>
+                <div
+                    className="flex p-2 justify-between mx-auto md:mx-0"
+                    onMouseEnter={handleDropdownEnter}
+                    onMouseLeave={handleDropdownLeave}
+                >
+                    {showDropdown ? (
+                        <span className="cursor-pointer mt-2 text-white" onClick={handleDropdownClick}>
                         &#9650;
                     </span>
-                ) : (
-                    <span className="cursor-pointer mt-2 text-white" onClick={handleDropdownClick}>
+                    ) : (
+                        <span className="cursor-pointer mt-2 text-white" onClick={handleDropdownClick}>
                         &#9660;
                     </span>
-                )}
-                {showDropdown && (<div className="absolute right-0 mt-14 bg-black rounded shadow-lg p-6">
-                        <ul>
-                            <li
-                                className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
-                                onClick={() => navigate("/manage-profile")}
-                            >
-                                <FontAwesomeIcon icon={faUser} className="mr-2"/>
-                                Manage Profiles
-                            </li>
-                            <li className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
-                                onClick={() => console.log("Account called")}
-                            >
-                                <FontAwesomeIcon icon={faCog} className="mr-2"/>
-                                Account
-                            </li>
-                            <li className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
-                                onClick={() => console.log("Help Center")}
-                            >
-                                <FontAwesomeIcon icon={faQuestionCircle} className="mr-2"/>
-                                Help Center
-                            </li>
-                            <li className="cursor-pointer text-white flex items-center mt-2 border-t py-2 whitespace-nowrap hover:underline"
-                                onClick={handleSignOut}
-                            >
-                                <FontAwesomeIcon icon={faSignInAlt} className="mr-2"/>
-                                Sign out with Netflix
-                            </li>
-                        </ul>
-                    </div>
-                )}
+                    )}
+                    {showDropdown && (<div className="absolute right-0 mt-14 bg-black rounded shadow-lg p-6">
+                            <ul>
+                                <li
+                                    className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
+                                    onClick={() => navigate("/manage-profile")}
+                                >
+                                    <FontAwesomeIcon icon={faUser} className="mr-2"/>
+                                    Manage Profiles
+                                </li>
+                                <li className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
+                                    onClick={() => console.log("Account called")}
+                                >
+                                    <FontAwesomeIcon icon={faCog} className="mr-2"/>
+                                    Account
+                                </li>
+                                <li className="cursor-pointer text-white flex items-center whitespace-nowrap hover:underline"
+                                    onClick={() => console.log("Help Center")}
+                                >
+                                    <FontAwesomeIcon icon={faQuestionCircle} className="mr-2"/>
+                                    Help Center
+                                </li>
+                                <li className="cursor-pointer text-white flex items-center mt-2 border-t py-2 whitespace-nowrap hover:underline"
+                                    onClick={handleSignOut}
+                                >
+                                    <FontAwesomeIcon icon={faSignInAlt} className="mr-2"/>
+                                    Sign out with Netflix
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>}
         </div>
     );
