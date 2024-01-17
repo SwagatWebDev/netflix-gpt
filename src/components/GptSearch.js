@@ -3,9 +3,9 @@ import GptMovieSuggestions from "./GptMovieSuggestions";
 import {LOGIN_LOGO_URL} from "../utils/constants";
 import React from "react";
 
-const GptSearch = () => {
+const  GptSearch = () => {
     return (
-        <div>
+        <>
             <div className="absolute -z-10">
                 <img
                     src={LOGIN_LOGO_URL}
@@ -13,10 +13,17 @@ const GptSearch = () => {
                     className="object-cover w-full h-full"
                 />
             </div>
-            <GptSearchBar/>
-            <GptMovieSuggestions/>
-        </div>
-    );
+            <div>
+                <GptSearchBar/>
+                <GptMovieSuggestions/>
+            </div>
+            {/*
+              - GPT Based Search Bar
+              - GPT Based Movie Suggestions
+            */}
+        </>
+
+    )
 };
 
 export default GptSearch;

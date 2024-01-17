@@ -1,8 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import lang from "../utils/languageContsants";
-import {useRef} from "react";
 import openai from "../utils/openai";
-import gptSearch from "./GptSearch";
+import {useRef} from "react";
 import {API_OPTION} from "../utils/constants";
 import {addGptMovieResult} from "../utils/gptSlice";
 
@@ -11,57 +10,43 @@ const GptSearchBar = () => {
     const searchText = useRef(null);
     const dispatch = useDispatch();
 
-    // search movie in TMDB
-    const searchMovieTMDB = async (movie) => {
-        const data = await fetch(
-            "https://api.themoviedb.org/3/search/movie?query=" +
-            movie +
-            "&include_adult=false&language=en-US&page=1",
-            API_OPTION
-        );
-        const json = await data.json();
+    const searchMoviesInTMDB = async (movie) => {
+        const movieData = await fetch("https://api.themoviedb.org/3/search/movie?query=" + movie +"&include_adult=false&language=en-US&page=1", API_OPTION);
+        const response = await movieData.json();
+        return response;
+    }
 
-        return json.results;
-    };
     const handleGPTSearchClick = async () => {
         console.log(searchText.current.value);
-        // Make an API call to GPT API and get Movie Results
 
-        const gptQuery =
-            "Act as a Movie Recommendation system and suggest some movies for the query : " +
-            searchText.current.value +
-            ". only give me names of 5 movies, comma seperated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
-        const gptResults = await openai.chat.completions.create({
+        const gptQuery = "Act as a movie Recommendation system and suggest some movie for the query: "
+            + searchText.current.value + ". Only give me the names of 5 movies, comma separated like example result given ahead. Example Result: Golmaal3, Sholay, Don, 3 Idiots, Gadar";
+
+        const gptResult = await openai.chat.completions.create({
             messages: [{ role: 'user', content: gptQuery }],
             model: 'gpt-3.5-turbo',
         });
 
-        if(!gptResults) {
-            // TODO: Write Error Handling
+        if(!gptResult) {
+            // TODO: Write Error Handling case
         }
-        console.log(gptResults.choices?.[0]?.message?.content);
+        console.log(gptResult.choices?.[0]?.message?.content);
 
-        // Andaz Apna Apna, Hera Pheri, Chupke Chupke, Jaane Bhi Do Yaaro, Padosan
-        const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
+        const gptMovies = gptResult.choices?.[0]?.message?.content.split(',');
 
-        // ["Andaz Apna Apna", "Hera Pheri", "Chupke Chupke", "Jaane Bhi Do Yaaro", "Padosan"]
+        const promiseArray = gptMovies.map((movie) => searchMoviesInTMDB(movie));
 
-        // For each movie I will search TMDB API
+        console.log(promiseArray);
 
-        const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
-        // [Promise, Promise, Promise, Promise, Promise]
+        const tmdbResult = await Promise.all(promiseArray);
 
-        const tmdbResults = await Promise.all(promiseArray);
+        console.log(tmdbResult);
 
-        console.log(tmdbResults);
-
-        dispatch(
-            addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
-        );
+        dispatch(addGptMovieResult({movieNames: gptMovies, movieResults: tmdbResult}));
     }
 
     return (
-        <div className="pt-[12%] flex justify-center">
+        <div className="pt-[13%] flex justify-center">
             <form className="w-1/2 bg-black grid grid-cols-12" onSubmit={e => e.preventDefault()}>
                 <input
                     type="text"
@@ -70,10 +55,11 @@ const GptSearchBar = () => {
                     placeholder={lang[langKey].gptSearchPlaceholder}
                 />
                 <button
-                    className="py-2 m-4 px-4 bg-red-700 text-white rounded-lg col-span-3"
+                    className="py-2 m-4 px-4 rounded-lg bg-red-700 col-span-3"
                     onClick={handleGPTSearchClick}
                 >
-                    {lang[langKey].search}</button>
+                    {lang[langKey].search}
+                </button>
             </form>
         </div>
     )

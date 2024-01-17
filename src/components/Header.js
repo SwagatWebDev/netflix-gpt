@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {HEADER_LOGO_URL, SUPPORTED_LANGUAGES, USER_ICON_URL} from "../utils/constants";
+import {HEADER_LOGO_URL, IMG_CDN_URL, SUPPORTED_LANGUAGES} from "../utils/constants";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {auth} from "../utils/firebase";
 import {useNavigate} from "react-router-dom";
@@ -7,8 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCog, faQuestionCircle, faSignInAlt, faUser} from "@fortawesome/free-solid-svg-icons";
 import {addUser, removeUser} from "../utils/userSlice";
-import {toggleGptSearchView} from "../utils/gptSlice";
-import { changeLanguage } from "../utils/configSlice";
+import {clearMovies, toggleGptSearchView} from "../utils/gptSlice";
+import {changeLanguage} from "../utils/configSlice";
 
 export const Header = () => {
 
@@ -20,7 +20,7 @@ export const Header = () => {
 
     const dispatch = useDispatch();
 
-    const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+    const showGptSearch = useSelector(store => store.gpt.showGptSearch);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -64,12 +64,15 @@ export const Header = () => {
     }
 
     const handleGptSearchClick = () => {
+        if(!showGptSearch){
+            dispatch(clearMovies());
+        }
         dispatch(toggleGptSearchView());
     }
 
     const handleLanguageChange = (e) => {
-        dispatch(changeLanguage(e.target.value));
-    };
+        dispatch(changeLanguage(e.target.value))
+    }
 
     return (
         <div
@@ -79,27 +82,23 @@ export const Header = () => {
                 src={HEADER_LOGO_URL}
                 alt="logo"
             />
-            <div className={`flex relative p-4 ${showGptSearch ? 'ml-[60%]' : 'ml-[65%]'}`}>
-                {showGptSearch && <select
-                    className="p-2 m-2 bg-gray-900 text-white"
-                    onChange={handleLanguageChange}
-                >
+            <div className={`flex relative p-4 ${showGptSearch ? 'ml-[57%]' : 'ml-[64%]'}`}>
+                {showGptSearch && <select className="p-2 m-2 bg-gray-900 text-white"
+                                          onChange={handleLanguageChange}>
                     {SUPPORTED_LANGUAGES.map((lang) => (
                         <option key={lang.identifier} value={lang.identifier}>
                             {lang.name}
                         </option>
                     ))}
                 </select>}
-                <button
-                    className="py-2 px-4 mx-4 my-2 bg-purple-800 text-white rounded-lg"
-                    onClick={handleGptSearchClick}
-                >
-                    {showGptSearch ? "Homepage" : "ChatGPT Search"}
+                <button className="bg-purple-800 text-white rounded-lg py-2 px-4 mx-4 my-2"
+                        onClick={handleGptSearchClick}>
+                    {showGptSearch ? "Home Page": "ChatGPT Search"}
                 </button>
                 <img
                     className="w-12 h-12"
                     alt="userIcon"
-                    src={user ? user.photoURL : USER_ICON_URL}
+                    src={user ? user.photoURL : IMG_CDN_URL}
                     onClick={handleDropdownClick}
                 />
             </div>
